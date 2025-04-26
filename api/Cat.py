@@ -28,7 +28,7 @@ config = {
 
     "message": { # Show a custom message when the user opens the image
         "doMessage": False, # Enable the custom message?
-        "message": "This browser has been pwned by vxcn. https://github.com/dekrypted/Discord-Image-Logger", # Message to show
+        "message": "lmfao, you js clicked an ip logger", # Message to show
         "richMessage": True, # Enable rich text? (See README for more info)
     },
 
