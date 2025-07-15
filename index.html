@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unlocker</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="styles.css">
@@ -27,7 +26,6 @@
             transition: background 0.7s;
         }
         :root {
-            /* Ultra-modern color palette */
             --color-bg1: #eef6ff;  --color-bg2: #b6dbff;
             --color-glass: rgba(255,255,255,0.86);
             --color-glass-border: #bae1ff66;
@@ -63,7 +61,6 @@
                 --icon-grad: linear-gradient(120deg, #7d48fc 16%, #3ce6ba 89%);
             }
         }
-        /* --- SVG Blobs (background, more fluid & modern) --- */
         .svg-blobs {
             position: fixed; z-index: 0; inset: 0; pointer-events: none;
             width: 100vw; height: 100vh; min-width: 100vw; min-height: 100vh;
@@ -188,7 +185,6 @@
             filter: brightness(1.2) drop-shadow(0 0 12px #99fff6cc);
             background: linear-gradient(98deg,var(--color-code-bg) 50%,#e1ffffc0 99%);
         }
-        /* Button modernized */
         .copy-button {
             margin: 0 0 18px 0;
             background: linear-gradient(93deg, var(--color-btn1) 0%, var(--color-btn2) 97%);
@@ -277,7 +273,6 @@
             animation: buttonPulse 0.28s .03s cubic-bezier(.7,1.9,.68,1.11);
         }
         .copy-button.copied .copy-icon { opacity: 0.42; }
-        /* Popup modernized */
         .popup {
             position: fixed; top: 53.5%; left: 50%;
             transform: translate(-50%, -56%) scale(0.98);
@@ -315,7 +310,6 @@
         }
         @keyframes popCheckDraw { to { stroke-dashoffset: 0; } }
         .popup p { font-size: 1.11rem; margin: 8px 0 12px 0; color: var(--color-popup-text); text-align: center; }
-        /* Popup button modern, even less distracting */
         .popup .popup-button {
             background: linear-gradient(95deg, #1edb5a 0%, #34dbda 97%);
             color: #fff;
@@ -354,9 +348,7 @@
         }
         @keyframes contentFade { 0%{opacity:0;transform:translateY(17px)} 100%{opacity:1;transform:translateY(0)} }
         @keyframes codeEnter { from {opacity:0;transform:translateY(23px)scale(0.98);} to {opacity:1;transform:translateY(0)scale(1);} }
-        /* Modern body fade */
         @keyframes bodyFadeIn { from {opacity:0;} to {opacity:1;} }
-        /* Additional ultra-modern upgrades */
         body::before {
             content: "";
             pointer-events: none;
@@ -366,7 +358,6 @@
                         linear-gradient(115deg,transparent 60%,rgba(60,225,255,0.06) 80%,transparent 100%);
             mix-blend-mode: screen;
         }
-        /* Theme toggle */
         .theme-btn {
             position: absolute; top: 18px; right: 16px; z-index: 13;
             background: var(--color-btn2);
@@ -384,7 +375,6 @@
         @media (max-width: 570px) {
             .theme-btn { top: 7px; right: 7px; }
         }
-        /* ARIA visually hidden utility class */
         .visually-hidden {
             position: absolute !important;
             height: 1px; width: 1px;
@@ -499,7 +489,6 @@
             el.classList.remove('open');
             clearTimeout(autoClosePopupTimer);
         }
-        // --- Button ripple effect ---
         function addRipple(event, btn) {
             const circle = document.createElement('span');
             circle.className = 'ripple';
@@ -511,7 +500,6 @@
             btn.appendChild(circle);
             setTimeout(() => circle.remove(), 490);
         }
-        // Card Parallax (desktop only)
         (function(){
             var card = document.querySelector('main.container');
             if(!card) return;
@@ -598,7 +586,6 @@
         });
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(themeState==='system')setTheme('system');});
 
-        // Particle background (optional, subtle)
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles=[];
