@@ -7,3 +7,6 @@
 
 
 # host using vercel
+
+
+anyways i think this is chatgpt tbh
